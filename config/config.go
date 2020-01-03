@@ -10,13 +10,15 @@ import (
 // Conf : the configuration objet for the app
 type Conf struct {
 	Server serverConf
+	Debug        bool		    `env:"DEBUG,required"`
 }
 
 type serverConf struct {
-	Port         int           `env:"SERVER_PORT,required"`
-	TimeoutRead  time.Duration `env:"SERVER_TIMEOUT_READ,required"`
-	TimeoutWrite time.Duration `env:"SERVER_TIMEOUT_WRITE,required"`
-	TimeoutIdle  time.Duration `env:"SERVER_TIMEOUT_IDLE,required"`
+	Port         int            `env:"SERVER_PORT,required"`
+	TimeoutRead  time.Duration  `env:"SERVER_TIMEOUT_READ,required"`
+	TimeoutWrite time.Duration  `env:"SERVER_TIMEOUT_WRITE,required"`
+	TimeoutIdle  time.Duration  `env:"SERVER_TIMEOUT_IDLE,required"`
+	
 }
 
 // AppConfig : returns the configuration pour our app.

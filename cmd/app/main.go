@@ -2,27 +2,38 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
-	"time"
+
+	"myapp/server/router"
+	"myapp/config"
+	lr "myapp/util/logger"
+
 )
 
 func main() {
+	appConf := config.AppConfig()
+
+	logger := lr.New(appConf.Debug)
+
+	appRouter := router.New()
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", Greet)
 
-	log.Println("Starting server :8080")
+	address := fmt.Sprintf(":%d", appConf.Server.Port)
+
+	logger.Info().Msgf("Starting server %v", address)
 
 	s := &http.Server{
-		Addr:         ":8080",
-		Handler:      mux,
-		ReadTimeout:  30 * time.Second,
-		WriteTimeout: 30 * time.Second,
-		IdleTimeout:  120 * time.Second,
+		Addr:         address,
+		Handler:      appRouter,
+		ReadTimeout:  appConf.Server.TimeoutRead,
+		WriteTimeout: appConf.Server.TimeoutWrite,
+		IdleTimeout:  appConf.Server.TimeoutIdle,
 	}
 
 	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatal("Server startup failed")
+		logger.Fatal().Err(err).Msg("Server startup failed")
 	}
 }
 
